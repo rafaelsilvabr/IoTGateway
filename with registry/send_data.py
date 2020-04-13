@@ -10,7 +10,7 @@ def send_data(received_data):
 	local_resources = json.load(json_resources)
 
 	data_resource={'data':local_resources[received_data['localId']]}
-
+	print("asend_data")
 	try:	
 		local_sensor=Sensors.get(Sensors.localid==received_data['localId']).get() 
 		print('Sensor ja cadastrado na db')

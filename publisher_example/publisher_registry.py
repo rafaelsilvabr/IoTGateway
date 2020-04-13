@@ -4,16 +4,12 @@ import time
 
 MQTT_ADDRESS = "soldier.cloudmqtt.com"
 MQTT_PORT = 10514
-MQTT_TIMEOUT = 5
+MQTT_TIMEOUT = 0.2
 LocalId = 'sensor01'
 registred = False
 TOPIC = LocalId
-
 client = mqtt.Client()
-client.username_pw_set("ctuqpqym","Xk5GNcWqcmZG")
-client.connect(MQTT_ADDRESS,MQTT_PORT,MQTT_TIMEOUT)
-client.subscribe(TOPIC)
-	 
+'''
 def on_message(client,userdata,msg):
 	print(1)
 	received_data = json.loads(msg.payload)
@@ -21,10 +17,19 @@ def on_message(client,userdata,msg):
 	if(received_data['registred'] == True):
 		registred = True
 		print("Confirmacao de Cadastro recebida")
+'''	 
+client.username_pw_set("ctuqpqym","Xk5GNcWqcmZG")
+client.connect(MQTT_ADDRESS,MQTT_PORT,MQTT_TIMEOUT)
+client.subscribe(TOPIC)
 
 while True:
 	#print(2)
-	if(registred == False):
+	file = open('regist_status.json','r')
+	regist_status = json.load(file)
+	
+	print(regist_status)
+
+	if(regist_status['registred'] == False):
 	#	print(3)
 		msg={'localId':LocalId,
 			'capabilities' :["temperature"],
@@ -42,5 +47,4 @@ while True:
 		print("Dado pub enviado")
 
 	time.sleep(MQTT_TIMEOUT)
-	client.on_message = on_message
 	#print(5)
