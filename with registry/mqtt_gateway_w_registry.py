@@ -23,7 +23,10 @@ def on_message(client,userdata,msg):
 	
 	#the register method registers and calls the send_data method
 	if(received_data['registred']==False):
-		register(received_data)
+		msg=register(received_data)
+		#send_data(received_data,local_sensor, data_resource)
+		client.publish(received_data['localId'],json.dumps(msg),qos=1,retain=True)	
+		print('Confirmacao enviada ao sensor')
 	else:
 		send_data(received_data)
 

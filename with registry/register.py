@@ -2,15 +2,6 @@ import json
 import requests
 from create_db import Sensors
 from send_data import send_data
-import paho.mqtt.client as mqtt
-
-MQTT_ADDRESS = "soldier.cloudmqtt.com"
-MQTT_PORT = 10514
-MQTT_TIMEOUT = 1
-
-client = mqtt.Client()
-client.username_pw_set("ctuqpqym","Xk5GNcWqcmZG")
-client.connect(MQTT_ADDRESS,MQTT_PORT,MQTT_TIMEOUT)
 
 def register (received_data):
 
@@ -30,9 +21,6 @@ def register (received_data):
 		local_sensor = Sensors.create(localid=received_data['localId'],uuid=dict_response['data']['uuid'])
 		print("LocalId e UUID vinculados na db")
 
-
 	msg={'registred':True
 	}		
-	#send_data(received_data,local_sensor, data_resource)
-	client.publish(received_data['localId'],json.dumps(msg),qos=1,retain=True)	
-	print('Confirmacao enviada ao sensor')
+	return msg
