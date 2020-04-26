@@ -3,6 +3,8 @@ import json
 from registry import Registry
 from sender import Sender
 import paho.mqtt.client as mqtt
+import timeit 
+
 
 class ProtocolClient (object):
 	def __init__(self,gatewayId):
@@ -34,6 +36,7 @@ class MqttClass (ProtocolClient):
 		self.mqttTopic = mqttTopic
 
 	def on_message(self,client,userdata,msg):
+		start = timeit.timeit()
 		print("Mensagem recebida")
 		receivedData = json.loads(msg.payload)
 
@@ -45,6 +48,10 @@ class MqttClass (ProtocolClient):
 				client.publish(receivedData['localId'],json.dumps(confirm),qos=1,retain=True)	
 		else:
 			self.callSender(receivedData)
+		end = timeit.timeit()
+		print('Tempo de execucao')
+		print(end - start)
+		print('\n')		
 
 	def startListening (self,mqttBrokerUser,mqttBrokerPassword):
 		self.mqttClient = mqtt.Client()
