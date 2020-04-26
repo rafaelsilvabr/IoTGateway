@@ -41,7 +41,7 @@ class Sender (object):
             p_data = {"data":dict_capabilitie}
             print(p_data)
 
-            response = requests.post ('http://localhost:8000/adaptor/resources/' + dbIds.uuid + '/data', data = json.dumps(p_data),headers=headers)
+            #response = requests.post ('http://localhost:8000/adaptor/resources/' + dbIds.uuid + '/data', data = json.dumps(p_data),headers=headers)
             print('Dados Enviados IC')
-            print(response.text)
+            #print(response.text)
             print('\n')

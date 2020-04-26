@@ -1,7 +1,6 @@
 import json
 import requests
 from create_db import Sensors
-from send_data import send_data
 
 class Registry(object):
 	def __init__(self):
