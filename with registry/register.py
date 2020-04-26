@@ -1,9 +1,12 @@
 import json
 import requests
 from create_db import Sensors
-from send_data import send_data
 
 def register (received_data):
+
+    headers= {
+        'Content-type': 'application/json',
+    }
 
 	json_resources = open('resources.json','r')
 	local_resources = json.load(json_resources)
