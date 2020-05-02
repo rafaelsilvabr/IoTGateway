@@ -5,22 +5,21 @@ from db import DB
 class Sender (object):
 
     def __init__(self):
-        pass
+        self.db = DB()
 
     def __requestSendDataIC(self,sensorData):
         headers= {
             'Content-type': 'application/json',
         }
 
+        #reading local jsons
         json_capabilities = open('capabilities.json','r')
         local_capabilities = json.load(json_capabilities)
-
         json_resources = open('resources.json','r')
         local_resources = json.load(json_resources)
-
         data_resource={'data':local_resources[sensorData['localId']]}
 
-        dbIds = DB.verifyDb(sensorData['localId'])
+        dbIds = self.db.verifyDB(sensorData['localId'])
         if(dbIds == False):
             print('error')
 		    
@@ -36,12 +35,18 @@ class Sender (object):
             p_data = {"data":dict_capabilitie}
             print(p_data)
 
+
             #response = requests.post ('http://localhost:8000/adaptor/resources/' + dbIds.uuid + '/data', data = json.dumps(p_data),headers=headers)
-            print('Dados Enviados IC')
             #print(response.text)
+            print('Dados Enviados IC')
             print('\n')
 
-        def callSender(self,sensorData):
-            dbIds = DB.verifyDb(sensorData['localId'])
-            if(dbIds != False):
-                __requestSendDataIC(sensorData)
+    def sendDataIC(self,sensorData):
+        print("Send Data Called")
+        print("Looking for ids in db")
+        dbIds = self.db.verifyDB(sensorData['localId'])
+        if(dbIds != False):
+            print("Sending Data to InterSCity")
+            self.__requestSendDataIC(sensorData)
+        else:
+            print("Not Founded")

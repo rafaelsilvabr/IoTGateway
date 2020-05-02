@@ -28,15 +28,18 @@ class MqttClass (ProtocolClient):
 		start = timeit.timeit()
 		print("Mensagem recebida")
 		receivedData = json.loads(msg.payload)
-
+		
+		#check type od mesage, register or data
 		if(receivedData['registred']==False):
 			dbIds = self.reg.registerResourceIC(receivedData)
 			if(dbIds != False):
+				#send confirmation to client
 				confirm={'registred':True
 				}
 				client.publish(receivedData['localId'],json.dumps(confirm),qos=1,retain=True)	
 		else:
 			self.send.sendDataIC(receivedData)
+
 		end = timeit.timeit()
 		print('Tempo de execucao')
 		print(end - start)
