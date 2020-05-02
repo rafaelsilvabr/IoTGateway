@@ -1,18 +1,13 @@
 import json
 import requests
-from registry import Registry
+from db import DB
 
 class Sender (object):
 
     def __init__(self):
         pass
 
-    def verifyDb(self,sensorLocalId):
-        reg = Registry()
-        dbIds = reg.getInDb(sensorLocalId)
-        return dbIds
-
-    def sendDataIC(self,sensorData):
+    def __requestSendDataIC(self,sensorData):
         headers= {
             'Content-type': 'application/json',
         }
@@ -25,7 +20,7 @@ class Sender (object):
 
         data_resource={'data':local_resources[sensorData['localId']]}
 
-        dbIds = self.verifyDb(sensorData['localId'])
+        dbIds = DB.verifyDb(sensorData['localId'])
         if(dbIds == False):
             print('error')
 		    
@@ -45,3 +40,8 @@ class Sender (object):
             print('Dados Enviados IC')
             #print(response.text)
             print('\n')
+
+        def callSender(self,sensorData):
+            dbIds = DB.verifyDb(sensorData['localId'])
+            if(dbIds != False):
+                __requestSendDataIC(sensorData)

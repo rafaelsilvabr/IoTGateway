@@ -9,19 +9,8 @@ import timeit
 class ProtocolClient (object):
 	def __init__(self,gatewayId):
 		self.gatewayId = gatewayId
-
-	def callRegistry(self,sensorData):
-		reg = Registry()
-		dbIds = reg.getInDb(sensorData['localId'])
-		if(dbIds == False):
-			dbIds = reg.registerResourceIC(sensorData['localId'])
-		return dbIds
-
-	def callSender(self,sensorData):
-		send = Sender()
-		dbIds = send.verifyDb(sensorData['localId'])
-		if(dbIds != False):
-			send.sendDataIC(sensorData)
+		self.reg = Registry()
+		self.send = Sender()
 
 #	@abstractmethod
 	def startListening(self):
@@ -41,13 +30,13 @@ class MqttClass (ProtocolClient):
 		receivedData = json.loads(msg.payload)
 
 		if(receivedData['registred']==False):
-			dbIds = self.callRegistry(receivedData)
+			dbIds = self.reg.registerResourceIC(receivedData)
 			if(dbIds != False):
 				confirm={'registred':True
 				}
 				client.publish(receivedData['localId'],json.dumps(confirm),qos=1,retain=True)	
 		else:
-			self.callSender(receivedData)
+			self.send.sendDataIC(receivedData)
 		end = timeit.timeit()
 		print('Tempo de execucao')
 		print(end - start)

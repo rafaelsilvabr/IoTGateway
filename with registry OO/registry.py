@@ -1,45 +1,42 @@
 import json
 import requests
-from create_db import Sensors
+from db import DB
 
 class Registry(object):
+
 	def __init__(self):
 		pass
 
-	def registerResourceIC(self,sensorLocalID):
+	def __prepareRegisterData(self,sensorLocalID):
+		json_resources = open('resources.json','r')
+		local_resources = json.load(json_resources)
+
+		data_resource={'data':local_resources[sensorLocalID]}		
+		return data_resource
+
+	def __requestRegisterIC(self,sensorLocalID):
 		headers= {
 			'Content-type': 'application/json',
 		}
 
-		json_resources = open('resources.json','r')
-		local_resources = json.load(json_resources)
-
-		data_resource={'data':local_resources[sensorLocalID]}
+		data_resource = __prepareRegisterData(sensorLocalID)
 
 		print("Cadastrando resource na plataforma")
 		response = requests.post ('http://localhost:8000/adaptor/resources', data = json.dumps(data_resource), headers=headers)
 		print("Cadastro na InterSCity Concluido")
 		dict_response = json.loads(response.text)
-		dbIds = self.createInDb(sensorLocalID,dict_response['data']['uuid'])
+		dbIds = DB.registerDB((sensorLocalID,dict_response['data']['uuid']))
 
 		return dbIds
 
-	def createInDb(self, sensorLocalID, uuid):
-		dbIds=False
-		try:
-			dbIds = Sensors.create(localid=sensorLocalID,uuid=uuid)
-			print("LocalId e UUID vinculados na db")
-		except:
-			print("Erro ao cadastrar na db")
+	def registerResourceIC(self,sensorData):
+		dbIds = DB.verifyDB(sensorData['localId'])
+		if(dbIds == False):
+			dbIds = __requestRegisterIC(sensorData['localId'])
 		return dbIds
 
-	def getInDb(self, sensorLocalID):
-		dbIds = False
-		try:	
-			local_sensor=Sensors.get(Sensors.localid==sensorLocalID).get() 
-			print('Sensor ja cadastrado na db')
-			dbIds = local_sensor
-		except:
-			print('Sensor nao cadastrado')
 
-		return dbIds
+
+
+
+

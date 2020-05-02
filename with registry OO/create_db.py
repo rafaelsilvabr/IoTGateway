@@ -6,8 +6,6 @@ class BaseModel(peewee.Model):
 	class Meta:
 		database=db
 
-
-
 class Sensors(BaseModel):
 	localid=peewee.CharField(unique=True)
 	uuid=peewee.CharField(unique=True)
