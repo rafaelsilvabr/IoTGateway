@@ -5,21 +5,21 @@ class DB(object):
   pass
 
  def verifyDB(self, sensorLocalID):
-  print("Loking on db")
+  print('Search for id in db')
   dbIds = False
   try:	
    local_sensor=Sensors.get(Sensors.localid == sensorLocalID).get() 
-   print('Sensor ja cadastrado na db')
+   print('Sensor already registered in db')
    dbIds = local_sensor
   except:
-   print('Sensor nao cadastrado')
+   print('Sensor not registered')
   return dbIds
 
  def registerDB(self, sensorLocalID, uuid):
   dbIds = False
   try:
    dbIds = Sensors.create(localid=sensorLocalID,uuid=uuid)
-   print("LocalId e UUID vinculados na db")
+   print("LocalId and UUID linked in db")
   except:
-   print("Erro ao cadastrar na db")
+   print("Error registering in db")
   return dbIds

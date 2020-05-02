@@ -26,7 +26,7 @@ class MqttClass (ProtocolClient):
 
 	def on_message(self,client,userdata,msg):
 		start = timeit.timeit()
-		print("Mensagem recebida")
+		print("Received a Message")
 		receivedData = json.loads(msg.payload)
 		
 		#check type od mesage, register or data
@@ -39,9 +39,9 @@ class MqttClass (ProtocolClient):
 				client.publish(receivedData['localId'],json.dumps(confirm),qos=1,retain=True)	
 		else:
 			self.send.sendDataIC(receivedData)
-
+			
 		end = timeit.timeit()
-		print('Tempo de execucao')
+		print('Runtime:')
 		print(end - start)
 		print('\n')		
 
