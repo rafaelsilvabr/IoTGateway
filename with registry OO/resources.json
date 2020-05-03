@@ -1,9 +1,0 @@
-{
-  "sensor01":{
-    "lat":-23.559616,
-    "lon":-46.731386,
-    "description":"Temperature sensor located at INF-UFG",
-    "capabilities":["temperature"],
-    "status":"active"
-  }
-}
