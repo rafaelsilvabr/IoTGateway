@@ -15,10 +15,10 @@ class DB(object):
    print('Sensor not registered')
   return dbIds
 
- def registerDB(self, sensorLocalID, uuid):
+ def registerDB(self, sensorLocalID, uuid , capabilities):
   dbIds = False
   try:
-   dbIds = Sensors.create(localid=sensorLocalID,uuid=uuid)
+   dbIds = Sensors.create(localid=sensorLocalID,uuid=uuid, capabilities = capabilities)
    print("LocalId and UUID linked in db")
   except:
    print("Error registering in db")

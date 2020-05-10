@@ -9,6 +9,7 @@ class BaseModel(peewee.Model):
 class Sensors(BaseModel):
 	localid=peewee.CharField(unique=True)
 	uuid=peewee.CharField(unique=True)
+	capabilities=peewee.TextField(unique=True)
 
 if __name__=='__main__':
 	try:

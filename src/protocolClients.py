@@ -29,7 +29,8 @@ class MqttClass (ProtocolClient):
 		receivedData = json.loads(msg.payload)
 		
 		#check type of message, with ot without state
-		if(receivedData['est']==True):
+		if(receivedData['estado']==True):
+			print('Sensor with status identified')
 			if(receivedData['registred']==False):
 				dbIds = self.reg.registerResourceIC(receivedData['localId'],receivedData['regInfos'])
 				if(dbIds != False):
@@ -38,13 +39,14 @@ class MqttClass (ProtocolClient):
 					}
 					client.publish(receivedData['localId'],json.dumps(confirm),qos=1,retain=True)	
 			else:
-				self.send.sendDataIC(receivedData['localId'],receivedData['data'])
+				self.send.ceSendDataIC(receivedData['localId'],receivedData['data'])
 		else:
+			print('Sensor without status identified')
 			#if is a sensor without state
 			dbIds = self.reg.registerResourceIC(receivedData['localId'],receivedData['regInfos'])
 			if(dbIds != False):
 				#send data to IC
-				self.send.sendDataIC(dbIds,receivedData['regInfos'])
+				self.send.seSendDataIC(dbIds,receivedData['data'])
 
 		end = timeit.timeit()
 		print('Runtime:')

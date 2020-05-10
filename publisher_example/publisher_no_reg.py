@@ -29,25 +29,15 @@ while True:
 	
 	print(regist_status)
 
-	if(regist_status['registred'] == False):
-	#	print(3)
-		msg={'localId':LocalId,
-		     'regInfos':{
-			'capabilities':["temperature"],
-			'description':'A simple test'},
-		     'registred': False,
-		     'estado': True}
-		client.publish("test5",json.dumps(msg),qos=1,retain=True)	
-		print("Dado cadast enviado")
-	else:	
-	#	print(4)
-		msg={'localId':LocalId,
-		     'data':{"humidity":50,"temperature":40},
-		     'registred': True,
-		     'estado':True}
-		#client.publish("test","helloworld",qos=1,retain=True)
-		client.publish("test5",json.dumps(msg),qos=1,retain=True)	
-		print("Dado pub enviado")
+#	print(3)
+	msg={'localId':LocalId,
+	     'data':{"humidity":50,"temperature":40},
+	     'regInfos':{
+		'capabilities':["temperature"],
+		'description':'A simple test'},
+                'estado': False}
+	client.publish("test5",json.dumps(msg),qos=1,retain=True)	
+	print("Dado sem regist enviado")
 
 	time.sleep(MQTT_TIMEOUT)
 	#print(5)
