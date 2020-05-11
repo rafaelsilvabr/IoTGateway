@@ -1,17 +1,18 @@
 import json
-#from abc import ABC, abstractmethod
+from abc import ABCMeta, abstractmethod
 from registry import Registry
 from sender import Sender
 import paho.mqtt.client as mqtt
 import timeit 
 
-class ProtocolClient (object):
+class ProtocolClient ():
+	__metaclass__ = ABCMeta
 	def __init__(self,gatewayId):
 		self.gatewayId = gatewayId
 		self.reg = Registry()
 		self.send = Sender()
 
-#	@abstractmethod
+	@abstractmethod
 	def startListening(self):
 		pass
 
