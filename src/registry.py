@@ -56,6 +56,10 @@ class Registry(object):
      print("id is already in the db")
 
    return dbIds
+   
+ def consultRegister(self,localId):
+   dbIds = self.db.verifyDB(localId)
+   return dbIds  
 
 
 

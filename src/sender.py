@@ -52,14 +52,8 @@ class Sender (object):
         except:
             print('Request Error')
 
-    def ceSendDataIC(self,localId,data):
-        print("Sender Started1")
-        dbIds = self.db.verifyDB(localId)
-        if(dbIds != False):
-            print("Sending Data to InterSCity")
-            self.__requestSendDataIC(dbIds,data)
 
-    def seSendDataIC(self,dbIds,data):
+    def sendDataIC(self,dbIds,data):
         print("Sender Started")
         print("Sending Data to InterSCity")
         self.__requestSendDataIC(dbIds,data)
