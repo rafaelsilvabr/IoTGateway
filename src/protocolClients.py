@@ -79,18 +79,25 @@ from coapthon.client.helperclient import HelperClient
 class CoapClass(ProtocolClient):
 	def __init__(self):
 		self.port = 5683
+		self.reg = Registry()
+		self.coapSensors = self.reg.getCoapSensors() 
+			#passar pro registry
+			'''jsonSensors = open('coapSensors.json','r')
+				coapSensors = json.load(jsonSensors)'''
 
 	def dataProcessing(self,receivedData):
 		#dbIds = self.reg.registerResourceIC(receivedData['localId'],receivedData['regInfos'])
 		dbIds = True
 		if(dbIds != False):
-			jsonSensors = open('coapSensors.json','r')
-			coapSensors = json.load(jsonSensors)
 
 			coapSensors[receivedData['localId']] = {'address':receivedData['address'],'timeout':receivedData['timeout']}
-
-			jsonSensors = open('coapSensors.json','w')
+			
+			print(coapSensors)
+			self.reg.saveCoapSensorInfos(coapSensors)
+			#passar pro registry
+'''			jsonSensors = open('coapSensors.json','w')
 			json.dump(coapSensors,jsonSensors)
+			print('Salvo')'''
 		else:
 			print('erro no cadastro')
 
@@ -117,7 +124,7 @@ class CoapClass(ProtocolClient):
 
 
 class BasicResource(Resource):
-    def __init__(self, name="BasicResource", coap_server=None):
+    def __init__(self, name="GatewayId", coap_server=None):
         super(BasicResource, self).__init__(name, coap_server, visible=True,observable=True, allow_children=True)
         self.payload = "GatewayInfos"
         self.resource_type = "rt1"
@@ -130,8 +137,8 @@ class BasicResource(Resource):
         print('--------------')
         print(res.payload)
         print('--------------')
-        receivedData = json.loads(payload)
-        coapProtocolGClient.dataProcessing(receivedData)
+        self.receivedData = json.loads(res.payload)
+        self.coapProtocolGClient.dataProcessing(self.receivedData)
         return res
 
 class CoAPServer(CoAP):
