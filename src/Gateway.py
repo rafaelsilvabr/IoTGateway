@@ -10,3 +10,4 @@ if __name__ == "__main__":
 
     gateway2 = CoapClass()
     gateway2.startListening()
+    gateway2.requestSensorData()

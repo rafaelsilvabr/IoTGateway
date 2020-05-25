@@ -80,10 +80,12 @@ class CoapClass(ProtocolClient):
 	def __init__(self):
 		self.port = 5683
 		self.reg = Registry()
-		self.coapSensors = self.reg.getCoapSensors() 
-			#passar pro registry
-			'''jsonSensors = open('coapSensors.json','r')
-				coapSensors = json.load(jsonSensors)'''
+		self.send = Sender()
+		#self.coapSensors = self.reg.getCoapSensors() 
+		# passar pro registry
+		jsonSensors = open('coapSensors.json','r')
+		self.coapSensors = json.load(jsonSensors)
+		#
 
 	def dataProcessing(self,receivedData):
 		#dbIds = self.reg.registerResourceIC(receivedData['localId'],receivedData['regInfos'])
@@ -94,10 +96,11 @@ class CoapClass(ProtocolClient):
 			
 			print(coapSensors)
 			self.reg.saveCoapSensorInfos(coapSensors)
-			#passar pro registry
-'''			jsonSensors = open('coapSensors.json','w')
+			# passar pro registry
+			jsonSensors = open('coapSensors.json','w')
 			json.dump(coapSensors,jsonSensors)
-			print('Salvo')'''
+			print('Salvo')
+			#
 		else:
 			print('erro no cadastro')
 
@@ -117,11 +120,17 @@ class CoapClass(ProtocolClient):
 		for sensor in coapSensors:
 			self.path = '.well-know/core'
 			client = HelperClient(server=(sensor['address'],self.port))
-			self.response = client.get(path)	
+			path = all_data
+			self.response = client.get(path)
 
-			#separar dado e requisitalos individualmente
-
-
+			self.data = self.response.pretty_print()
+			ind_pay = self.data.find("Payload: \n")
+			ind_atm = self.data.find("ATM")
+			size_data = ind_atm - (ind_pay+10)
+			self.data = self.data[(ind_pay+10):(ind_pay+10+size_data)]
+			
+			self.reg.consultRegister(sensor['localId'])
+			self.send.sendDataIC(dbIds,self.data)
 
 class BasicResource(Resource):
     def __init__(self, name="GatewayId", coap_server=None):
