@@ -18,9 +18,9 @@ def on_message(client,userdata,msg):
 		registred = True
 		print("Confirmacao de Cadastro recebida")
 '''	 
-client.username_pw_set("ctuqpqym","Xk5GNcWqcmZG")
-client.connect(MQTT_ADDRESS,MQTT_PORT,MQTT_TIMEOUT)
-client.subscribe(TOPIC)
+#client.username_pw_set("ctuqpqym","Xk5GNcWqcmZG")
+#client.connect(MQTT_ADDRESS,MQTT_PORT,MQTT_TIMEOUT)
+#client.subscribe(TOPIC)
 
 while True:
 	#print(2)
@@ -36,7 +36,8 @@ while True:
 		'capabilities':["temperature"],
 		'description':'A simple test'},
                 'estado': False}
-	client.publish("test5",json.dumps(msg),qos=1,retain=True)	
+	print(json.dumps(msg))
+#	client.publish("test5",json.dumps(msg),qos=1,retain=True)	
 	print("Dado sem regist enviado")
 
 	time.sleep(MQTT_TIMEOUT)

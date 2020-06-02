@@ -63,6 +63,7 @@ class MqttClass (ProtocolClient):
 		print('\n')		
 
 	def startListening (self,mqttBrokerUser,mqttBrokerPassword):
+		print("\033[34mSTART LISTENING MQTT INITIALIZED\033[m")
 		self.mqttClient = mqtt.Client()
 		self.mqttClient.username_pw_set(mqttBrokerUser,mqttBrokerPassword)
 		self.mqttClient.connect(self.mqttAddress,self.mqttPort,self.mqttTimeout)
@@ -81,30 +82,30 @@ class CoapClass(ProtocolClient):
 		self.port = 5683
 		self.reg = Registry()
 		self.send = Sender()
-		#self.coapSensors = self.reg.getCoapSensors() 
-		# passar pro registry
-		jsonSensors = open('coapSensors.json','r')
-		self.coapSensors = json.load(jsonSensors)
-		#
+		self.coapSensors = self.reg.getCoapSensors()
 
 	def dataProcessing(self,receivedData):
-		#dbIds = self.reg.registerResourceIC(receivedData['localId'],receivedData['regInfos'])
-		dbIds = True
-		if(dbIds != False):
-
-			coapSensors[receivedData['localId']] = {'address':receivedData['address'],'timeout':receivedData['timeout']}
-			
-			print(coapSensors)
-			self.reg.saveCoapSensorInfos(coapSensors)
-			# passar pro registry
-			jsonSensors = open('coapSensors.json','w')
-			json.dump(coapSensors,jsonSensors)
-			print('Salvo')
-			#
+		if(receivedData["registred"]!=True):
+			#dbIds = self.reg.registerResourceIC(receivedData['localId'],receivedData['regInfos'])
+			dbIds = True
+			if(dbIds != False):
+				
+				print(' ')
+				print('call reg')
+				saveCoapBool = self.reg.saveCoapSensorsInfo(receivedData)
+				if(saveCoapBool!= False):
+					self.coapSensors = self.reg.getCoapSensors()
+					print(self.coapSensors)
+			else:
+				print('erro no cadastro')
 		else:
-			print('erro no cadastro')
+			#dbIds = self.reg.consultregister(receivedData['localId'])
+			if(dbIds!=False):
+				print("SendCoapData")
+				#self.send.sendDataIC(dbIds,receivedData['data'])
 
 	def startListening(self):
+		print("\033[33mSTART LISTENING COAP INITIALIZED\033[m")
 		server = CoAPServer("0.0.0.0", 5683)
 		try:
 			server.listen(10)
@@ -114,23 +115,18 @@ class CoapClass(ProtocolClient):
 			print "Exiting..."
 
 	def requestSensorData(self):
-		jsonSensors = open('coapSensors.json','r')
-		coapSensors = json.load(jsonSensors)
-
-		for sensor in coapSensors:
-			self.path = '.well-know/core'
-			client = HelperClient(server=(sensor['address'],self.port))
-			path = all_data
+			print("\033[35mREQUEST SENSOR DATA INITIALIZED\033[m")
+			path = 'data'
+		#for sensor in self.coapSensors:
+			client = HelperClient(server=(self.coapSensors["sensor"]["address"],5683))
 			self.response = client.get(path)
 
-			self.data = self.response.pretty_print()
-			ind_pay = self.data.find("Payload: \n")
-			ind_atm = self.data.find("ATM")
-			size_data = ind_atm - (ind_pay+10)
-			self.data = self.data[(ind_pay+10):(ind_pay+10+size_data)]
-			
-			self.reg.consultRegister(sensor['localId'])
-			self.send.sendDataIC(dbIds,self.data)
+			self.data = json.loads(self.response.payload)
+			print(self.data)
+
+			#dbIds = self.reg.consultRegister(self.data['localId'])
+			#self.send.sendDataIC(dbIds,self.data)
+			print('Sended')
 
 class BasicResource(Resource):
     def __init__(self, name="GatewayId", coap_server=None):
@@ -148,9 +144,9 @@ class BasicResource(Resource):
         print('--------------')
         self.receivedData = json.loads(res.payload)
         self.coapProtocolGClient.dataProcessing(self.receivedData)
-        return res
+        return res #error 
 
 class CoAPServer(CoAP):
     def __init__(self, host, port):
         CoAP.__init__(self, (host, port))
-        self.add_resource('basic/', BasicResource())
+        self.add_resource('register/', BasicResource())

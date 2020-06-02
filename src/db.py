@@ -1,4 +1,5 @@
 from create_db import Sensors
+import json
 
 class DB(object):
  def __init__(self):
@@ -11,7 +12,7 @@ class DB(object):
    local_sensor=Sensors.get(Sensors.localid == sensorLocalID).get() 
    print('Sensor already registered in db')
    dbIds = local_sensor
-  except:
+  except: 
    print('Sensor not registered')
   return dbIds
 
@@ -23,3 +24,22 @@ class DB(object):
   except:
    print("Error registering in db")
   return dbIds
+
+ def getCoap(self):
+  print("Getting Coap Sensor")
+  jsonSensors = open('coapSensors.json','r')
+  coapSensors = json.load(jsonSensors)
+  print(coapSensors)
+  print(type(coapSensors))
+  return coapSensors
+
+ def regCoap(self,receivedData):
+  print("Register Coap Sensor")
+  sensors = self.getCoap()
+  print(type(receivedData))
+  print(receivedData)
+  sensors[receivedData['localid']] = {"address":receivedData["address"], "timeout":receivedData["timeout"]}
+
+  jsonSensors = open('coapSensors.json','w')
+  json.dump(sensors,jsonSensors)
+  print('Salvo')

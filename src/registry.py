@@ -61,8 +61,11 @@ class Registry(object):
    dbIds = self.db.verifyDB(localId)
    return dbIds  
 
+ def getCoapSensors(self):
+   sensors = self.db.getCoap()
+   return sensors
 
-
-
-
-
+ def saveCoapSensorsInfo(self,receivedData):
+   print('reg,save coap')
+   sensors = self.db.regCoap(receivedData)
+   return sensors
