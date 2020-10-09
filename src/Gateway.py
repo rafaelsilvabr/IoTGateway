@@ -15,13 +15,14 @@ if __name__ == "__main__":
     #sthread_coap_client = coapGateway.requestSensorData()
 
 
-    w1 = threading.Thread(target = mqttGateway.startListening, args=("ctuqpqym","Xk5GNcWqcmZG"))
+ #   w1 = threading.Thread(target = mqttGateway.startListening, args=("ctuqpqym","Xk5GNcWqcmZG"))
     w2 = threading.Thread(target = coapGateway.startListening)
-    w3 = threading.Thread(target= coapGateway.requestSensorData)
+#    w3 = threading.Thread(target= coapGateway.requestSensorData)
     
-    w1.start()
+  #  w1.start()
     w2.start()
 
-    while(1):
+'''    while(1):
         coapGateway.requestSensorData()
         time.sleep(5)
+'''

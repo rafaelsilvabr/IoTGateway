@@ -25,6 +25,15 @@ class DB(object):
    print("Error registering in db")
   return dbIds
 
+ def registerDB(self, sensorLocalID, uuid):
+  dbIds = False
+  try:
+   dbIds = Sensors.create(localid=sensorLocalID,uuid=uuid)
+   print("LocalId and UUID linked in db")
+  except:
+   print("Error registering in db")
+  return dbIds
+
  def getCoap(self):
   print("Getting Coap Sensor")
   jsonSensors = open('coapSensors.json','r')

@@ -82,27 +82,29 @@ class CoapClass(ProtocolClient):
 		self.port = 5683
 		self.reg = Registry()
 		self.send = Sender()
-		self.coapSensors = self.reg.getCoapSensors()
+		#self.coapSensors = self.reg.getCoapSensors()
 
 	def dataProcessing(self,receivedData):
 		if(receivedData["registred"]!=True):
-			#dbIds = self.reg.registerResourceIC(receivedData['localId'],receivedData['regInfos'])
+			print(receivedData['regInfos'])
+			dbIds = self.reg.registerResourceIC(receivedData['localId'],receivedData['regInfos'])
 			dbIds = True
 			if(dbIds != False):
-				
 				print(' ')
 				print('call reg')
-				saveCoapBool = self.reg.saveCoapSensorsInfo(receivedData)
-				if(saveCoapBool!= False):
-					self.coapSensors = self.reg.getCoapSensors()
-					print(self.coapSensors)
+				dbIds = self.reg.consultRegister(receivedData['localId'])
+				if(dbIds!= False):
+					dbIds = self.reg.registerResourceIC(receivedData['localId'],receivedData['regInfos'])
+					#print(self.coapSensors)
 			else:
 				print('erro no cadastro')
 		else:
-			#dbIds = self.reg.consultregister(receivedData['localId'])
-			if(dbIds!=False):
-				print("SendCoapData")
-				#self.send.sendDataIC(dbIds,receivedData['data'])
+			print('Sensor without status identified')
+			#if is a sensor without state
+			dbIds = self.reg.registerResourceIC(receivedData['localId'],receivedData['regInfos'])
+			if(dbIds != False):
+				#send data to IC
+				self.send.sendDataIC(dbIds,receivedData['data'])
 
 	def startListening(self):
 		print("\033[33mSTART LISTENING COAP INITIALIZED\033[m")
@@ -138,15 +140,57 @@ class BasicResource(Resource):
         self.coapProtocolGClient = CoapClass()
 
     def render_POST(self, request):
+    	i = time.time()
         res = self.init_resource(request, BasicResource())
         print('--------------')
         print(res.payload)
         print('--------------')
         self.receivedData = json.loads(res.payload)
         self.coapProtocolGClient.dataProcessing(self.receivedData)
+        f = time.time()
+        print(f-i)
         return res #error 
 
 class CoAPServer(CoAP):
     def __init__(self, host, port):
         CoAP.__init__(self, (host, port))
-        self.add_resource('register/', BasicResource())
+        self.add_resource('data/', BasicResource())
+
+
+##-------------------Testbed-------------------------------##
+import socket,time
+
+class Testbed(ProtocolClient):
+	def __init__(self,ip,port):
+		client_socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
+		client_socket.connect((ip,port))
+		time.sleep(2)
+
+	def startListening(self):
+		
+		while True:
+			data = client_socket.recv(512)
+			if data.lower() =='q':
+				client_socket.close()
+				break
+
+			print("Recebido: %s" % data)
+			self.dataProcessing(self,data)
+
+	def dataProcessing(self,receivedData):
+		#check type of message, with ot without state
+		if(receivedData['estado']==True):
+			print('Sensor with status identified')
+			if(receivedData['registred']==False):
+				dbIds = self.reg.registerResourceIC(receivedData['localId'],receivedData['regInfos'])
+			else:
+				dbIds = self.reg.consultregister(receivedData['localId'])
+				if(dbIds!=False):
+					self.send.sendDataIC(dbIds,receivedData['data'])
+		else:
+			print('Sensor without status identified')
+			#if is a sensor without state
+			dbIds = self.reg.registerResourceIC(receivedData['localId'],receivedData['regInfos'])
+			if(dbIds != False):
+				#send data to IC
+				self.send.sendDataIC(dbIds,receivedData['data'])

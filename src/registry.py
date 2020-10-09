@@ -27,18 +27,19 @@ class Registry(object):
      'Content-type': 'application/json',
    }
 
-   data_resource = self.__prepareRegisterData(regInfos)
-
+   #data_resource = self.__prepareRegisterData(regInfos)
+   data_resource = regInfos
    print("Registering on InterSCity")
-   #response = requests.post ('http://localhost:8000/adaptor/resources', data = json.dumps(data_resource), headers=headers)
+   response = requests.post ('http://34.122.206.9:8000/adaptor/resources', data = json.dumps(data_resource), headers=headers)
    print("Registered")
-   #dict_response = json.loads(response.text)
-   dict_response={'data':{'uuid':1234}}
+   print(response.text)
+   dict_response = json.loads(response.text)
+   #dict_response={'data':{'uuid':1234}}
    try:
-     capabilities = regInfos['capabilities']
-     capabilities = json.dumps(capabilities)
+    # capabilities = regInfos['capabilities']
+    # capabilities = json.dumps(capabilities)
      sensoruuid = dict_response['data']['uuid']
-     dbIds = self.db.registerDB(localId,sensoruuid,capabilities)
+     dbIds = self.db.registerDB(localId,sensoruuid)
    except:
      dbIds = False
      print('Response error')

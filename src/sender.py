@@ -37,12 +37,12 @@ class Sender (object):
             'Content-type': 'application/json',
         }
 
-        p_data = self.__preparePostData(dbIds.capabilities,data)
-        
+        #p_data = self.__preparePostData(dbIds.capabilities,data)
+        p_data = data
         try:
-            #response = requests.post ('http://localhost:8000/adaptor/resources/' + dbIds.uuid + '/data', data = json.dumps(p_data),headers=headers)
-            response = "{}"
-            #print(response.text)
+            response = requests.post ('http://34.122.206.9:8000/adaptor/resources/' + dbIds.uuid + '/data', data = json.dumps(p_data),headers=headers)
+            response = "ENVIADO"
+            print(response.text)
             #response.text here
             if(response == "{}"):
                 print('Data Sent to IC')
