@@ -1,0 +1,10 @@
+{
+	"temperature":[{
+		"temperature": null,
+		"timestamp": null
+	}],
+	"humidity":[{
+		"humidity": null,
+		"timestamp": null
+	}]
+}
