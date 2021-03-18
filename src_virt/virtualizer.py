@@ -56,13 +56,27 @@ class Virtualizer(object):
     return msg
 
 
- def consultVirtualRes(self, realSensorId):
-  #Buscar Virtual Sensor da DB e seus sensores
-  idsensor1='id1'
-  idsensor2='id2'
-
-  sensor1 = self.db.verifyDB(idsensor1)
-  sensor2 = self.db.verifyDB(idsensor2)
-
-  data = self.__updateVirtualResData(sensor1.lastdata,sensor2.lastdata)
-  return data
+ def consultVirtualRes(self, realSensorId, data):
+  print('Consult Virtual Resource initialized')
+  #Buscar Virtual Sensor na DB e seus sensores
+  #virtualSensor = self.db.verifyDB(realSensorId)
+  #  virtualSensor['data'] = self.__updateVirtualResData(data,virtualSensor['sensor2'].lastdata)
+  virtualSensor = False
+  if(realSensorId == 'sensor01'):
+    virtualSensor ={"estado":"Virtual",
+      "registred":True,
+      "uuid":"328913",
+      "status": "active",
+      "lat":10,
+      "lon":12,
+      "sensor1":"id1",
+      "sensor2":"id2",
+      "data":{
+        "data": [{
+          "temperature": (30+25)/2.0
+        }]
+      }
+    }
+  if(virtualSensor!=False):
+    self.send.sendDataIC(virtualSensor['uuid'],virtualSensor['data'])
+  return virtualSensor

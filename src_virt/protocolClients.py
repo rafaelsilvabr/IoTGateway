@@ -2,7 +2,6 @@ import json
 from abc import ABCMeta, abstractmethod
 from registry import Registry
 from sender import Sender
-import paho.mqtt.client as mqtt
 import timeit 
 
 from virtualizer import Virtualizer
@@ -20,6 +19,7 @@ class ProtocolClient ():
 		pass
 
 #-----------------------------MQTT--------------------------------------------
+import paho.mqtt.client as mqtt
 
 class MqttClass (ProtocolClient):
 	def __init__(self, gatewayId, mqttAddress, mqttPort, mqttTimeout, mqttTopic):
@@ -29,8 +29,12 @@ class MqttClass (ProtocolClient):
 		self.mqttTimeout = mqttTimeout
 		self.mqttTopic = mqttTopic
 
+	def test(self,receivedData):
+		print('test')
+
 	def dataProcessing(self,client,receivedData):
 		#check type of message, with ot without state
+		print('dataProcessing Started')
 		if(receivedData['estado']==True):
 			print('Sensor with status identified')
 			if(receivedData['registered']==False):
@@ -43,32 +47,40 @@ class MqttClass (ProtocolClient):
 			else:
 				dbIds = self.reg.consultregister(receivedData['localId'])
 				if(dbIds!=False):
+					#send data to IC
+					self.virt.consultVirtualRes(dbIds,receivedData['data'])
 					self.send.sendDataIC(dbIds,receivedData['data'])
-		elif(receivedData['estado']=='Virtual'):
-			##### VIRTUALIZER TEST
-			if(receivedData['registered']==False):
-				flag = self.virt.registerVirtualRes('id1','id2',receivedData['regInfos'])
-			else:
-				data = False
-				data = self.virt.consultVirtualRes(receivedData['localId'])
-				if(data != False):				
-					self.send.sendDataIC(data['uuid'],data)
 		else:
-			print('Sensor without status identified')
-			#if is a sensor without state
-			dbIds = self.reg.registerResourceIC(receivedData['localId'],receivedData['regInfos'])
-			if(dbIds != False):
-				#send data to IC
-				self.send.sendDataIC(dbIds,receivedData['data'])
-
+			if(receivedData['estado']=='Virtual'):
+				##### VIRTUALIZER REGISTRATION
+				print('\n')
+				print('VirtualSensor Register')
+				if(receivedData['registred']==False):
+					flag = self.virt.registerVirtualRes('sensor01','sensor02',receivedData['regInfos'])
+				else:
+					print('Recurso Virtual ja registrado\n')
+				print('\n')
+			else:
+				print('Sensor without status identified')
+				#if is a sensor without state
+				dbIds = self.reg.registerResourceIC(receivedData['localId'],receivedData['regInfos'])
+				dbIds = 'sensor01' #apenas para teste do virtualizer
+				if(dbIds != False):
+					#send data to IC
+					print('[DEBUG]send')
+					print('\n')
+					self.virt.consultVirtualRes(dbIds,receivedData['data'])
+					print('\n')
+					self.send.sendDataIC(dbIds,receivedData['data'])
+					print('\n')
+		print('[MQTT]Waiting')
 
 	def on_message(self,client,userdata,msg):
 		start = timeit.timeit()
 		print("Received a Message")
 		receivedData = json.loads(msg.payload)
-	
-		dataProcessing(client,receivedData)		
-
+		print(receivedData)
+		self.dataProcessing(client,receivedData)
 		end = timeit.timeit()
 		print('Runtime:')
 		print(end - start)
@@ -143,30 +155,30 @@ class CoapClass(ProtocolClient):
 			print('Sended')
 
 class BasicResource(Resource):
-    def __init__(self, name="GatewayId", coap_server=None):
-        super(BasicResource, self).__init__(name, coap_server, visible=True,observable=True, allow_children=True)
-        self.payload = "GatewayInfos"
-        self.resource_type = "rt1"
-        self.content_type = "text/plain"
-        self.interface_type = "if1"
-        self.coapProtocolGClient = CoapClass()
+	def __init__(self, name="GatewayId", coap_server=None):
+		super(BasicResource, self).__init__(name, coap_server, visible=True,observable=True, allow_children=True)
+		self.payload = "GatewayInfos"
+		self.resource_type = "rt1"
+		self.content_type = "text/plain"
+		self.interface_type = "if1"
+		self.coapProtocolGClient = CoapClass()
 
-    def render_POST(self, request):
-        i = time.time()
-        res = self.init_resource(request, BasicResource())
-        print('--------------')
-        print(res.payload)
-        print('--------------')
-        self.receivedData = json.loads(res.payload)
-        self.coapProtocolGClient.dataProcessing(self.receivedData)
-        f = time.time()
-        print(f-i)
-        return res #error 
+	def render_POST(self, request):
+		i = time.time()
+		res = self.init_resource(request, BasicResource())
+		print('--------------')
+		print(res.payload)
+		print('--------------')
+		self.receivedData = json.loads(res.payload)
+		self.coapProtocolGClient.dataProcessing(self.receivedData)
+		f = time.time()
+		print(f-i)
+		return res #error 
 
 class CoAPServer(CoAP):
-    def __init__(self, host, port):
-        CoAP.__init__(self, (host, port))
-        self.add_resource('data/', BasicResource())
+	def __init__(self, host, port):
+		CoAP.__init__(self, (host, port))
+		self.add_resource('data/', BasicResource())
 
 
 ##-------------------Testbed-------------------------------##

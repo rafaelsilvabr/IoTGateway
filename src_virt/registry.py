@@ -7,6 +7,7 @@ class Registry(object):
  def __init__(self):
   self.db = DB()
 
+# TODO reimplementar
  def __prepareRegisterData(self,regInfos):
   json_resources = open('resources.json','r')
   local_resources = json.load(json_resources)
@@ -17,9 +18,6 @@ class Registry(object):
     except:
       local_resources[topic] = None
   data_resource={'data':local_resources}	
-  print('Dados p Registro')
-  print(data_resource)
-  print('\n')
   return data_resource
 
  def __requestRegisterIC(self,localId,regInfos):
@@ -29,17 +27,24 @@ class Registry(object):
 
    #data_resource = self.__prepareRegisterData(regInfos)
    data_resource = regInfos
+
+   print('\n')
+   print('Dados p Registro')
+   print(data_resource)
+   print('\n')
+
    print("Registering on InterSCity")
-   response = requests.post ('http://34.122.206.9:8000/adaptor/resources', data = json.dumps(data_resource), headers=headers)
-   print("Registered")
-   print(response.text)
-   dict_response = json.loads(response.text)
-   #dict_response={'data':{'uuid':1234}}
+  # response = requests.post ('http://34.122.206.9:8000/adaptor/resources', data = json.dumps(data_resource), headers=headers)
+  # print("Registered:" + response.text)
+  # print('\n')
+#   print(response.text)
+  # dict_response = json.loads(response.text)
+   dict_response={'data':{'uuid':1234}} #comentar essa linha apenas quando  linha 37 estiver comentada
    try:
-    # capabilities = regInfos['capabilities']
-    # capabilities = json.dumps(capabilities)
+     #capabilities = regInfos['capabilities']
+     #capabilities = json.dumps(capabilities)
      sensoruuid = dict_response['data']['uuid']
-     dbIds = self.db.registerDB(localId,sensoruuid)
+     dbIds = self.db.registerDB(localId,sensoruuid) #adicionar capabilities no registro local
    except:
      dbIds = False
      print('Response error')
