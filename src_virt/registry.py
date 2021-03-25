@@ -34,17 +34,20 @@ class Registry(object):
    print('\n')
 
    print("Registering on InterSCity")
-  # response = requests.post ('http://34.122.206.9:8000/adaptor/resources', data = json.dumps(data_resource), headers=headers)
-  # print("Registered:" + response.text)
-  # print('\n')
-#   print(response.text)
-  # dict_response = json.loads(response.text)
-   dict_response={'data':{'uuid':1234}} #comentar essa linha apenas quando  linha 37 estiver comentada
+   #response = requests.post ('http://34.95.255.97:8000/adaptor/resources', data = json.dumps(data_resource), headers=headers)
+   #print("Registered:")
+   #print(response)
+
+  # dict_response={'data':{'uuid':1234}} #comentar essa linha apenas quando  linha 37 estiver comentada
    try:
+     #print(response.text)
+     #print('\n')
+     #dict_response = json.loads(response.text)
      #capabilities = regInfos['capabilities']
      #capabilities = json.dumps(capabilities)
-     sensoruuid = dict_response['data']['uuid']
-     dbIds = self.db.registerDB(localId,sensoruuid) #adicionar capabilities no registro local
+     #sensoruuid = dict_response['data']['uuid']
+     sensoruuid = "54321"
+     dbIds = self.db.registerDB(localId,sensoruuid,'empty') #adicionar capabilities no registro local
    except:
      dbIds = False
      print('Response error')

@@ -11,14 +11,14 @@ class Virtualizer(object):
   self.reg = Registry()
   self.send = Sender()
 
- def registerVirtualRes(self,idsensor1,idsensor2,regInfos):
+ def registerVirtualRes(self,sensor01,sensor02,regInfos):
   print("Reg. Virtual Resource")
   flag=False
   valsensor1 = False
   valsensor2 = False
 
-  valsensor1 = self.db.verifyDB(idsensor1)
-  valsensor2 = self.db.verifyDB(idsensor2)
+  valsensor1 = self.db.verifyDB(sensor01)
+  valsensor2 = self.db.verifyDB(sensor02)
 
   if(valsensor1==False | valsensor2==False):
    print("IDs not in db!")
@@ -37,46 +37,25 @@ class Virtualizer(object):
 
   return not flag
 
-  def __updateVirtualResData(self,sensor1,sensor2):
-    ##Realizar a operacao do sensor virtual, retornat todas as infos do recurso
-    msg = {"estado":"Virtual",
-        "registred":True,
-        "uuid":"328913",
-	      "status": "active",
-	      "lat":10,
-	      "lon":12,
-	      "sensor1":"id1",
-	      "sensor2":"id2",
-      	"data":{
-		      "data": [{
-	          "temperature": (sensor1+sensor2)/2.0000
-	        }]
-	      }
-    }
-    return msg
+ def updateVirtualResData(self,data,idSensor):
+  ##Realizar a operacao do sensor virtual, retornat todas as infos do recurso  
+  #msg = {"estado":"Virtual", "registred":True, "uuid":"328913", "status": "active", "lat":10, "lon":12, "sensor1":"id1", "sensor2":"id2", "data":{"data":["temperature": 11]}}
+  if(idSensor == "sensor01"):
+    print("VirtualRes [Sensor01]")
+    msg = {"uuid":"1234","data":{"temperatura":20}}
+  if(idSensor == "sensor02"):
+    print("VirtualRes [Sensor02]")
+    msg = {"uuid":"1234","data":{"temperatura":45}}
+
+  return msg
 
 
  def consultVirtualRes(self, realSensorId, data):
   print('Consult Virtual Resource initialized')
   #Buscar Virtual Sensor na DB e seus sensores
   #virtualSensor = self.db.verifyDB(realSensorId)
-  #  virtualSensor['data'] = self.__updateVirtualResData(data,virtualSensor['sensor2'].lastdata)
   virtualSensor = False
-  if(realSensorId == 'sensor01'):
-    virtualSensor ={"estado":"Virtual",
-      "registred":True,
-      "uuid":"328913",
-      "status": "active",
-      "lat":10,
-      "lon":12,
-      "sensor1":"id1",
-      "sensor2":"id2",
-      "data":{
-        "data": [{
-          "temperature": (30+25)/2.0
-        }]
-      }
-    }
+  virtualSensor = self.updateVirtualResData(data,realSensorId)
   if(virtualSensor!=False):
     self.send.sendDataIC(virtualSensor['uuid'],virtualSensor['data'])
   return virtualSensor

@@ -29,12 +29,11 @@ class MqttClass (ProtocolClient):
 		self.mqttTimeout = mqttTimeout
 		self.mqttTopic = mqttTopic
 
-	def test(self,receivedData):
-		print('test')
-
 	def dataProcessing(self,client,receivedData):
 		#check type of message, with ot without state
 		print('dataProcessing Started')
+		print("")
+
 		if(receivedData['estado']==True):
 			print('Sensor with status identified')
 			if(receivedData['registered']==False):
@@ -64,15 +63,13 @@ class MqttClass (ProtocolClient):
 				print('Sensor without status identified')
 				#if is a sensor without state
 				dbIds = self.reg.registerResourceIC(receivedData['localId'],receivedData['regInfos'])
+				print("")
 				dbIds = 'sensor01' #apenas para teste do virtualizer
 				if(dbIds != False):
 					#send data to IC
 					print('[DEBUG]send')
-					print('\n')
-					self.virt.consultVirtualRes(dbIds,receivedData['data'])
-					print('\n')
+					self.virt.consultVirtualRes(receivedData['localId'], receivedData['data'])
 					self.send.sendDataIC(dbIds,receivedData['data'])
-					print('\n')
 		print('[MQTT]Waiting')
 
 	def on_message(self,client,userdata,msg):

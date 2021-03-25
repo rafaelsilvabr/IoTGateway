@@ -16,23 +16,26 @@ class DB(object):
    print('Sensor not registered')
   return dbIds
 
- def registerDB(self, sensorLocalID, uuid , capabilities):
+ def registerDB(self, sensorLocalID, uuid, lastdata):
   dbIds = False
   try:
-   dbIds = Sensors.create(localid=sensorLocalID,uuid=uuid, capabilities = capabilities)
+   dbIds = Sensors.create(localid=sensorLocalID, uuid=uuid, lastdata=lastdata)
    print("LocalId and UUID linked in db")
   except:
    print("Error registering in db")
   return dbIds
 
- def registerDB(self, sensorLocalID, uuid):
+ def updateDB(self,sensorLocalID,lastdata):
   dbIds = False
   try:
-   dbIds = Sensors.create(localid=sensorLocalID,uuid=uuid)
-   print("LocalId and UUID linked in db")
+   print(sensorLocalID)
+   print(lastdata)
+   dbIds = Sensors.get(Sensors.localid == sensorLocalID).get()
+   dbIds.lastdata = lastdata
+   dbIds.save()
+   print("updated in db")
   except:
-   print("Error registering in db")
-  return dbIds
+   print("update failed")
 
  def getCoap(self):
   print("Getting Coap Sensor")

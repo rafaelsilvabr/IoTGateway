@@ -10,7 +10,6 @@ if __name__ == "__main__":
 
     #mqttGateway.startListening("ctuqpqym","Xk5GNcWqcmZG")
 
-
     #sthread_coap_server = coapGateway.startListening()
     #sthread_coap_client = coapGateway.requestSensorData()
 

@@ -40,10 +40,11 @@ class Sender (object):
         #p_data = self.__preparePostData(dbIds.capabilities,data)
         p_data = data
         try:
-            response = requests.post ('http://34.122.206.9:8000/adaptor/resources/' + dbIds.uuid + '/data', data = json.dumps(p_data),headers=headers)
-            response = "ENVIADO"
-            print(response.text)
+            #response = requests.post ('http://34.122.206.9:8000/adaptor/resources/' + dbIds.uuid + '/data', data = json.dumps(p_data),headers=headers)
+            response = "{}"
+            #print(response.text)
             #response.text here
+            self.db.updateDB(dbIds,data)
             if(response == "{}"):
                 print('Data Sent to IC')
                 print('\n')

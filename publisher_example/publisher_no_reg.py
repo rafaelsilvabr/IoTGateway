@@ -5,7 +5,7 @@ import time
 MQTT_ADDRESS = "soldier.cloudmqtt.com"
 MQTT_PORT = 10514
 MQTT_TIMEOUT = 0.2
-LocalId = 'sensor01'
+LocalId = 'sensor02'
 registred = False
 TOPIC = LocalId
 client = mqtt.Client()
@@ -31,7 +31,7 @@ while True:
 
 #	print(3)
 	msg={'localId':LocalId,
-	     'data':{"humidity":50,"temperature":40},
+	     'data':{"humidity":30,"temperature":10},
 	     'regInfos':{
 		'capabilities':["temperature"],
 		'description':'A simple test'},

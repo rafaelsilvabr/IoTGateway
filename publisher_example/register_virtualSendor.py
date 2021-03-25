@@ -36,7 +36,9 @@ while True:
 			'capabilities':["temperature"],
 			'description':'A simple test'},
 		'registred': False,
-		'estado': 'Virtual'}
+		'estado': 'Virtual',
+		'sensor01':'sensor01',
+		'sensor02':'sensor02'}
 
 	print(json.dumps(msg))
 	client.publish("test5",json.dumps(msg),qos=1,retain=True)	
