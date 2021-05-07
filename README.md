@@ -14,8 +14,6 @@ Requirements
      - Paho-Mqtt
      - CoAPthon
 
-
-
 Padrao de dados
 
 Dados registro REAL Sensor
@@ -26,16 +24,6 @@ Dados registro REAL Sensor
 		 'description':'A simple test'},
 	     'registred': False,
 	     'estado': True}
-
-Dados registro VIRTUAL Sensor
-
-	msg={'localId':LocalId,
-	    'regInfos':{
-		 'capabilities':["temperature"],
-		 'description':'A simple virtual sensor test'},
-	     'registred': False,
-	     'estado': 'Virtual',
-         'sensors': ["sensor01","sensor02"]}
 
 Dados publiccao
 
