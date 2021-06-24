@@ -55,7 +55,7 @@ class MqttClass (ProtocolClient):
 		print("Received a Message")
 		receivedData = json.loads(msg.payload)
 	
-		dataProcessing(client,receivedData)		
+		self.dataProcessing(client,receivedData)		
 
 		end = timeit.timeit()
 		print('Runtime:')
@@ -112,9 +112,9 @@ class CoapClass(ProtocolClient):
 		try:
 			server.listen(10)
 		except KeyboardInterrupt:
-			print "Server Shutdown"
+			print ("Server Shutdown")
 			server.close()
-			print "Exiting..."
+			print ("Exiting...")
 
 	def requestSensorData(self):
 			print("\033[35mREQUEST SENSOR DATA INITIALIZED\033[m")
@@ -140,7 +140,7 @@ class BasicResource(Resource):
         self.coapProtocolGClient = CoapClass()
 
     def render_POST(self, request):
-    	i = time.time()
+        i = time.time()
         res = self.init_resource(request, BasicResource())
         print('--------------')
         print(res.payload)

@@ -1,4 +1,5 @@
 from create_db import Sensors
+from create_db import Virtualizers
 import json
 
 class DB(object):
@@ -52,3 +53,16 @@ class DB(object):
   jsonSensors = open('coapSensors.json','w')
   json.dump(sensors,jsonSensors)
   print('Salvo')
+
+ def getVirtualizers(self, uuid):
+  virtAddr = Virtualizers.select()
+  if(uuid != 0):
+   virtAddr = Virtualizers.select().where(Virtualizers.uuid == uuid)
+  return virtAddr
+
+ def setVirtualizer(self,sensoruuid,vaddr):
+  virt = Virtualizers(
+      uuid = sensoruuid,
+      addr = vaddr
+  ) 
+  virt.save()

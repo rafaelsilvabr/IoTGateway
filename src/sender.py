@@ -6,6 +6,9 @@ class Sender (object):
 
     def __init__(self):
         self.db = DB()
+        self.inctaddr = open('config.json','r')
+        self.inctaddr = json.load(self.inctaddr)
+        self.inctaddr = self.inctaddr['inctaddr']
 
     def __preparePostData(self,capabilities,data):
         #reading local jsons
@@ -40,7 +43,7 @@ class Sender (object):
         #p_data = self.__preparePostData(dbIds.capabilities,data)
         p_data = data
         try:
-            response = requests.post ('http://34.122.206.9:8000/adaptor/resources/' + dbIds.uuid + '/data', data = json.dumps(p_data),headers=headers)
+            response = requests.post (self.inctaddr + '/adaptor/resources/' + dbIds.uuid + '/data', data = json.dumps(p_data), headers=headers)
             response = "ENVIADO"
             print(response.text)
             #response.text here
