@@ -44,7 +44,7 @@ class Sender (object):
         p_data = data
         try:
             response = requests.post (self.inctaddr + '/adaptor/resources/' + dbIds.uuid + '/data', data = json.dumps(p_data), headers=headers)
-            response = "ENVIADO"
+            response = "ENVIADO p/INCT"
             print(response.text)
             #response.text here
             if(response == "{}"):
