@@ -10,10 +10,17 @@ class Sensors(BaseModel):
 	localid=peewee.CharField(unique=True)
 	uuid=peewee.CharField(unique=True)
 
+class Virtualizers(BaseModel):
+	uuid=peewee.CharField(default=None)
+	addr=peewee.CharField(default=None)
+
 if __name__=='__main__':
 	try:
-		Sensors.create_table()
+		db.create_tables([
+			Sensors,
+			Virtualizers
+		])
 		print("Tabela 'Sensors' criada!")
-	except peewee.OperationError:
+	except:
 		print("Tabela 'Sensors' ja existe!")
 

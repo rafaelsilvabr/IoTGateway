@@ -1,5 +1,6 @@
 import json
 import requests
+from create_db import Virtualizers
 from db import DB
 
 class Sender (object):
@@ -50,6 +51,9 @@ class Sender (object):
             if(response == "{}"):
                 print('Data Sent to IC')
                 print('\n')
+                sensorVirtualizer = Virtualizers.select.where(Virtualizers.uuid == dbIds.uuid)
+                for virtualizer in sensorVirtualizer:
+                    requests.post ("http://" + virtualizer.uuid + "/data", data = json.dumps(p_data), headers=headers)
             else:
                 print('Response Error')
         except:
