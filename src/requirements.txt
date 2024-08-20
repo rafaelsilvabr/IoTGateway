@@ -9,6 +9,6 @@ Jinja2==3.0.1
 MarkupSafe==2.0.1
 paho-mqtt==1.5.1
 peewee==3.14.4
-requests==2.25.1
+requests==2.32.2
 urllib3==1.26.5
 Werkzeug==2.2.3
